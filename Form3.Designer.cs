@@ -97,7 +97,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.LicenseBox);
             this.Name = "AboutPage";
-            this.Text = "Form3";
+            this.Text = "关于";
             this.Load += new System.EventHandler(this.AboutPage_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
