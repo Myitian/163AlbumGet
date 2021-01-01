@@ -25,7 +25,7 @@ namespace _163AlbumGet
         string loc = Program.tloc, exp = "",
             ls1, ls2, ls3,
             sdata0, sdata1, sdata2, sdataa,
-            dlstr = "", dlerr = "";
+            dlerr = "";
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -90,8 +90,9 @@ namespace _163AlbumGet
                         DLfailedcount++;
                         dlerr = "";
                     }
-                    if (dlstr[0] == '<')
+                    if (File.ReadAllText(locx)[0] == '<')
                     {
+                        File.Delete(locx);
                         Error("下载失败，可能原因：版权限制或地区限制 (" + (i + 1).ToString() + ")");
                         ini.IniWriteValue("DownloadFailed", "count", DLfailedcount.ToString());
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", (i + 1).ToString());
@@ -151,7 +152,7 @@ namespace _163AlbumGet
                                         rb.rb[SongListBox.SelectedIndex].id.ToString()) +
                                 Program.fmt;
                 Directory.CreateDirectory(SaveLoc.Text + @"\");
-                if (DownloadFile("http://music.163.com/song/media/outer/url?id=" + rb.rb[SongListBox.SelectedIndex].id.ToString() + Program.fmt, locx))
+                if (DownloadFile("http://music.163.com/song/media/outer/url?id=" + rb.rb[SongListBox.SelectedIndex].id.ToString(), locx))
                 {
                     Success("下载成功！位置：" + locx);
                 }
@@ -160,10 +161,10 @@ namespace _163AlbumGet
                     Error("下载失败 " + dlerr);
                     dlerr = "";
                 }
-                if (dlstr[0] == '<')
+                if (File.ReadAllText(locx)[0] == '<')
                 {
+                    File.Delete(locx);
                     Error("下载失败，可能原因：版权限制或地区限制");
-                    dlstr = "";
                 }
             }
         }
@@ -335,13 +336,11 @@ namespace _163AlbumGet
                 myrp.Close();
                 Myrq.Abort();
                 dlerr = "";
-                dlstr= myStreamReader.ReadToEnd();
                 return true;
             }
             catch (Exception ee)
             {
                 dlerr = ee.Message;
-                dlstr = "";
                 return false;
             }
         }
