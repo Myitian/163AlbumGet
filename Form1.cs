@@ -227,7 +227,7 @@ namespace _163AlbumGet
 
         private void SongListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (rb != null && SongListBox.SelectedIndex > 0)
+            if (rb != null && SongListBox.SelectedIndex >= 0)
             {
                 ts = new TimeSpan(0, 0, 0, 0, rb.rb[SongListBox.SelectedIndex].duration);
                 ls1 = ts.Seconds.ToString();
