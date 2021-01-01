@@ -24,7 +24,8 @@ namespace _163AlbumGet
         int idata0, idata1, idataa;
         string loc = Program.tloc, exp = "",
             ls1, ls2, ls3,
-            sdata0, sdata1, sdata2, sdataa;
+            sdata0, sdata1, sdata2, sdataa,
+            dlstr = "", dlerr = "";
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -78,16 +79,26 @@ namespace _163AlbumGet
                     else
                     {
                         Error("下载失败 (" + (i + 1).ToString() + ")");
-                        ini.IniWriteValue("DownloadFailed", "count", DLfailedcount.ToString());
+                        ini.IniWriteValue("DownloadFailed", "count", (DLfailedcount + 1).ToString());
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", (i + 1).ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲ID", rb.rb[i].id.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "源地址", "http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "保存路径", locx);
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "错误提示", dlerr);
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "可能原因", "网络问题");
                         DLfailedcount++;
+                        dlerr = "";
                     }
-                    if (File.ReadAllText(locx)[0] == '<')
+                    if (dlstr[0] == '<')
                     {
                         Error("下载失败，可能原因：版权限制或地区限制 (" + (i + 1).ToString() + ")");
                         ini.IniWriteValue("DownloadFailed", "count", DLfailedcount.ToString());
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", (i + 1).ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲ID", rb.rb[i].id.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "源地址", "http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "保存路径", locx);
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "可能原因", "版权限制或地区限制");
                         DLfailedcount++;
                     }
@@ -146,11 +157,13 @@ namespace _163AlbumGet
                 }
                 else
                 {
-                    Error("下载失败");
+                    Error("下载失败 " + dlerr);
+                    dlerr = "";
                 }
-                if (File.ReadAllText(locx)[0] == '<')
+                if (dlstr[0] == '<')
                 {
                     Error("下载失败，可能原因：版权限制或地区限制");
+                    dlstr = "";
                 }
             }
         }
@@ -309,6 +322,7 @@ namespace _163AlbumGet
                 HttpWebResponse myrp = (HttpWebResponse)Myrq.GetResponse();
                 Stream st = myrp.GetResponseStream();
                 Stream so = new FileStream(filename, FileMode.Create);
+                StreamReader myStreamReader = new StreamReader(st, Encoding.UTF8);
                 byte[] by = new byte[10485760];
                 int osize = st.Read(by, 0, by.Length);
                 while (osize > 0)
@@ -320,11 +334,14 @@ namespace _163AlbumGet
                 st.Close();
                 myrp.Close();
                 Myrq.Abort();
+                dlerr = "";
+                dlstr= myStreamReader.ReadToEnd();
                 return true;
             }
-            catch
+            catch (Exception ee)
             {
-                MessageBox.Show("");
+                dlerr = ee.Message;
+                dlstr = "";
                 return false;
             }
         }
