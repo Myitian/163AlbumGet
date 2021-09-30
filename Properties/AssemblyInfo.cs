@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("163AlbumGet")]
-[assembly: AssemblyCopyright("Copyright © 2021 MiaoYitian")]
+[assembly: AssemblyCopyright("Copyright © 2021 Myitian")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
