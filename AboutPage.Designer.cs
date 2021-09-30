@@ -51,7 +51,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(136, 16);
             this.label1.TabIndex = 7;
-            this.label1.Text = "163AlbumGet v2.1";
+            this.label1.Text = "163AlbumGet v2.2";
             // 
             // label2
             // 

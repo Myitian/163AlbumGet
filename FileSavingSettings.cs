@@ -13,26 +13,26 @@ namespace _163AlbumGet
             InitializeComponent();
         }
 
-        public static string FileNameFilter(string s, char? replacechar = null)
+        public static string FileNameFilter(string s, string replacestring = null)
         {
             char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
-            string a = "";
+            string a = string.Empty;
             foreach (char c in s)
             {
                 if (InvalidFileNameChars.Contains(c))
                 {
-                    if (replacechar is null) continue;
-                    else a += replacechar;
+                    if (replacestring is null) continue;
+                    else a += replacestring;
                 }
                 else a += c;
             }
             return a;
         }
 
-        public static string PathFilter(string s, char? replacechar = null)
+        public static string PathFilter(string s, string replacestring = null)
         {
             char[] InvalidPathChars = Path.GetInvalidPathChars().Concat(new char[] { '*', '?' }).ToArray();
-            string a = "";
+            string a = string.Empty;
             bool n = false;
             foreach (char c in s)
             {
@@ -45,14 +45,14 @@ namespace _163AlbumGet
                     }
                     else
                     {
-                        if (replacechar is null) continue;
-                        else a += replacechar;
+                        if (replacestring is null) continue;
+                        else a += replacestring;
                     }
                 }
                 else if (InvalidPathChars.Contains(c))
                 {
-                    if (replacechar is null) continue;
-                    else a += replacechar;
+                    if (replacestring is null) continue;
+                    else a += replacestring;
                 }
                 else a += c;
             }
@@ -143,10 +143,10 @@ namespace _163AlbumGet
             {
                 FileSaveDirI.Text += @"\";
             }
-            if (FileSaveDirI.Text != "" ||
-                AlbumFolderNameI.Text != "" ||
-                SingleSongFilenameI.Text != "" ||
-                MultipleSongsFilenameI.Text != "")
+            if (FileSaveDirI.Text != string.Empty ||
+                AlbumFolderNameI.Text != string.Empty ||
+                SingleSongFilenameI.Text != string.Empty ||
+                MultipleSongsFilenameI.Text != string.Empty)
             {
                 if (ReplaceCHK(FileSaveDirI.Text, "文件保存地址 文本框") &&
                     ReplaceCHK(AlbumFolderNameI.Text, "专辑文件夹名称 文本框") &&
@@ -187,7 +187,7 @@ namespace _163AlbumGet
             }
             else
             {
-                Error("文件名不能为空！", "");
+                Error("文件名不能为空！", string.Empty);
             }
         }
 

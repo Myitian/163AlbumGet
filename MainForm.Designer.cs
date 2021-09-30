@@ -79,7 +79,7 @@
             this.GetIt.Name = "GetIt";
             this.GetIt.Size = new System.Drawing.Size(75, 26);
             this.GetIt.TabIndex = 3;
-            this.GetIt.Text = "GET IT";
+            this.GetIt.Text = "获取";
             this.GetIt.UseVisualStyleBackColor = true;
             this.GetIt.Click += new System.EventHandler(this.GetIt_Click);
             // 

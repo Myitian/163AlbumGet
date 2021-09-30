@@ -22,10 +22,10 @@ namespace _163AlbumGet
         RootObject rb;
         TimeSpan ts;
         int idata0, idata1;
-        string loc = Program.tloc, exp = "",
+        string loc = Program.tloc, exp = string.Empty,
             ls1, ls2, ls3,
             sdata0, sdata1, sdata2, sdataa,
-            dlerr = "";
+            dlerr = string.Empty;
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -41,7 +41,14 @@ namespace _163AlbumGet
         {
             if (rb != null)
             {
-                string ls5 = Conv(Program.afn, "", "", rb.rb[0].album.name, rb.rb[0].album.id.ToString(), "", "");
+                string ls5 = Conv(
+                    FileSavingSettings.FileNameFilter(Program.afn, "_"),
+                    string.Empty,
+                    string.Empty,
+                    FileSavingSettings.FileNameFilter(rb.rb[0].album.name, "_"),
+                    FileSavingSettings.FileNameFilter(rb.rb[0].album.id.ToString(), "_"),
+                    string.Empty,
+                    string.Empty);
                 Directory.CreateDirectory(SaveLoc.Text + ls5);
                 ProcessB.Maximum = rb.rb.Count;
                 ProcessL.Text = rb.rb.Count.ToString();
@@ -50,7 +57,7 @@ namespace _163AlbumGet
                 IniFiles ini = new IniFiles(SaveLoc.Text + ls5 + @"\下载失败的文件.ini");
                 for (int i = 0; i < rb.rb.Count; i++)
                 {
-                    string ls4 = "";
+                    string ls4 = string.Empty;
                     for (int i2 = 0; i2 < rb.rb[i].artists.Count; i2++)
                     {
                         if (i2 != 0)
@@ -59,27 +66,29 @@ namespace _163AlbumGet
                         }
                         ls4 += rb.rb[i].artists[i2].name;
                     }
-                    string ls6 = Conv(Program.msf,
-                                        i.ToString().PadLeft((rb.rb.Count - 1).ToString().Length, '0'),
-                                        ls4,
-                                        rb.rb[0].album.name,
-                                        rb.rb[0].album.id.ToString(),
-                                        rb.rb[i].name.ToString(),
-                                        rb.rb[i].id.ToString());
-                    locx = FileSavingSettings.PathFilter(SaveLoc.Text + ls5 + @"\" + ls6 + Program.fmt, '_');
+                    string ls6 = Conv(
+                        FileSavingSettings.FileNameFilter(Program.msf, "_"),
+                        FileSavingSettings.FileNameFilter(i.ToString().PadLeft((rb.rb.Count - 1).ToString().Length, '0'), "_"),
+                        FileSavingSettings.FileNameFilter(ls4, "_"),
+                        FileSavingSettings.FileNameFilter(rb.rb[0].album.name, "_"),
+                        FileSavingSettings.FileNameFilter(rb.rb[0].album.id.ToString(), "_"),
+                        FileSavingSettings.FileNameFilter(rb.rb[i].name, "_"),
+                        FileSavingSettings.FileNameFilter(rb.rb[i].id.ToString(), "_"));
+                    locx = FileSavingSettings.PathFilter(SaveLoc.Text + ls5 + @"\" + ls6 + Program.fmt, "_");
                     if (!DownloadFile("http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString() + Program.fmt, locx))
                     {
-                        Error("下载失败 (" + (i + 1).ToString() + ")");
+                        int iii = i + 1;
+                        Error("下载失败 (" + iii + ")");
                         ini.IniWriteValue("DownloadFailed", "count", (DLfailedcount + 1).ToString());
-                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", (i + 1).ToString());
-                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", iii.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name);
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲ID", rb.rb[i].id.ToString());
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "源地址", "http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString());
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "保存路径", locx);
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "错误提示", dlerr);
                         ini.IniWriteValue("Error" + DLfailedcount.ToString(), "可能原因", "网络问题");
                         DLfailedcount++;
-                        dlerr = "";
+                        dlerr = string.Empty;
                     }
                     using (FileStream fs = File.OpenRead(locx))
                     {
@@ -88,10 +97,11 @@ namespace _163AlbumGet
                             fs.Close();
                             fs.Dispose();
                             File.Delete(locx);
-                            Error("下载失败，可能原因：版权限制或地区限制 (" + (i + 1).ToString() + ")");
+                            int iii = i + 1;
+                            Error("下载失败，可能原因：版权限制或地区限制 (" + iii + ")");
                             ini.IniWriteValue("DownloadFailed", "count", DLfailedcount.ToString());
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", (i + 1).ToString());
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name.ToString());
+                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", iii.ToString());
+                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name);
                             ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲ID", rb.rb[i].id.ToString());
                             ini.IniWriteValue("Error" + DLfailedcount.ToString(), "源地址", "http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString());
                             ini.IniWriteValue("Error" + DLfailedcount.ToString(), "保存路径", locx);
@@ -129,23 +139,22 @@ namespace _163AlbumGet
         {
             if (SongListBox.SelectedItem != null)
             {
-                string ls4 = "";
+                string ls4 = string.Empty;
                 for (int i2 = 0; i2 < rb.rb[SongListBox.SelectedIndex].artists.Count; i2++)
                 {
                     if (i2 != 0) ls4 += ";";
 
                     ls4 += rb.rb[SongListBox.SelectedIndex].artists[i2].name;
                 }
-                string locx = SaveLoc.Text +
-                                Conv(Program.ssf,
-                                        "",
-                                        ls4,
-                                        rb.rb[0].album.name,
-                                        rb.rb[0].album.id.ToString(),
-                                        rb.rb[SongListBox.SelectedIndex].name,
-                                        rb.rb[SongListBox.SelectedIndex].id.ToString()) +
-                                Program.fmt;
-                locx = FileSavingSettings.PathFilter(locx, '_');
+                string locx = Conv(
+                    FileSavingSettings.FileNameFilter(Program.ssf, "_"),
+                    string.Empty,
+                    FileSavingSettings.FileNameFilter(ls4, "_"),
+                    FileSavingSettings.FileNameFilter(rb.rb[0].album.name, "_"),
+                    FileSavingSettings.FileNameFilter(rb.rb[0].album.id.ToString(), "_"),
+                    FileSavingSettings.FileNameFilter(rb.rb[SongListBox.SelectedIndex].name, "_"),
+                    FileSavingSettings.FileNameFilter(rb.rb[SongListBox.SelectedIndex].id.ToString(), "_"));
+                locx = FileSavingSettings.PathFilter(SaveLoc.Text + locx + Program.fmt, "_");
                 Directory.CreateDirectory(SaveLoc.Text + @"\");
                 if (DownloadFile("http://music.163.com/song/media/outer/url?id=" + rb.rb[SongListBox.SelectedIndex].id.ToString(), locx))
                 {
@@ -154,7 +163,7 @@ namespace _163AlbumGet
                 else
                 {
                     Error("下载失败 " + dlerr);
-                    dlerr = "";
+                    dlerr = string.Empty;
                 }
                 using (FileStream fs = File.OpenRead(locx))
                 {
@@ -192,7 +201,14 @@ namespace _163AlbumGet
         {
             if (rb != null)
             {
-                string ls4 = Conv(Program.afn, "", "", rb.rb[0].album.name, rb.rb[0].album.id.ToString(), "", "");
+                string ls4 = Conv(
+                    FileSavingSettings.FileNameFilter(Program.afn, "_"),
+                    string.Empty,
+                    string.Empty,
+                    FileSavingSettings.FileNameFilter(rb.rb[0].album.name, "_"),
+                    FileSavingSettings.FileNameFilter(rb.rb[0].album.id.ToString(), "_"),
+                    string.Empty,
+                    string.Empty);
                 Directory.CreateDirectory(SaveLoc.Text + ls4);
                 IniFiles ini = new IniFiles(SaveLoc.Text + ls4 + @"\专辑信息.ini");
                 ini.IniWriteValue("AlbumInfo", "id", rb.rb[0].album.id.ToString());
@@ -204,7 +220,7 @@ namespace _163AlbumGet
                     ini.IniWriteValue("Song" + i.ToString(), "id", rb.rb[i].id.ToString());
                     ini.IniWriteValue("Song" + i.ToString(), "name", rb.rb[i].name);
                     ini.IniWriteValue("Song" + i.ToString(), "duration", rb.rb[i].duration.ToString());
-                    ls2 = "";
+                    ls2 = string.Empty;
                     for (int i2 = 0; i2 < rb.rb[i].artists.Count; i2++)
                     {
                         if (i2 != 0)
@@ -213,7 +229,7 @@ namespace _163AlbumGet
                         }
                         ls2 += rb.rb[i].artists[i2].name;
                     }
-                    ls3 = "";
+                    ls3 = string.Empty;
                     for (int i2 = 0; i2 < rb.rb[i].artists.Count; i2++)
                     {
                         if (i2 != 0)
@@ -249,7 +265,7 @@ namespace _163AlbumGet
                 {
                     ls1 = "0" + ls1;
                 }
-                ls2 = "";
+                ls2 = string.Empty;
                 for (int i = 0; i < rb.rb[SongListBox.SelectedIndex].artists.Count; i++)
                 {
                     if (i != 0)
@@ -277,9 +293,9 @@ namespace _163AlbumGet
         }
         private void Clear()
         {
-            Err.Text = "";
-            AlbumTitle.Text = "";
-            SongTitle.Text = "";
+            Err.Text = string.Empty;
+            AlbumTitle.Text = string.Empty;
+            SongTitle.Text = string.Empty;
             SongID.Text = "ID：";
             SongLength.Text = "时长：";
             SongArtists.Text = "艺术家：";
@@ -296,19 +312,19 @@ namespace _163AlbumGet
         {
             Directory.CreateDirectory(loc);
             IniFiles ini = new IniFiles(Program.tloc + @"\settings.ini");
-            if (ini.IniReadValue("163AlbumGet", "FileSaveDir").Trim() != "")
+            if (ini.IniReadValue("163AlbumGet", "FileSaveDir").Trim() != string.Empty)
             {
                 Program.savedir = ini.IniReadValue("163AlbumGet", "FileSaveDir");
             }
-            if (ini.IniReadValue("163AlbumGet", "AlbumFolderName").Trim() != "")
+            if (ini.IniReadValue("163AlbumGet", "AlbumFolderName").Trim() != string.Empty)
             {
                 Program.afn = ini.IniReadValue("163AlbumGet", "AlbumFolderName");
             }
-            if (ini.IniReadValue("163AlbumGet", "SingleSongFilename").Trim() != "")
+            if (ini.IniReadValue("163AlbumGet", "SingleSongFilename").Trim() != string.Empty)
             {
                 Program.ssf = ini.IniReadValue("163AlbumGet", "SingleSongFilename");
             }
-            if (ini.IniReadValue("163AlbumGet", "MultipleSongsFilename").Trim() != "")
+            if (ini.IniReadValue("163AlbumGet", "MultipleSongsFilename").Trim() != string.Empty)
             {
                 Program.msf = ini.IniReadValue("163AlbumGet", "MultipleSongsFilename");
             }
@@ -335,7 +351,7 @@ namespace _163AlbumGet
                 st.Close();
                 myrp.Close();
                 Myrq.Abort();
-                dlerr = "";
+                dlerr = string.Empty;
                 return true;
             }
             catch (Exception ee)
@@ -364,7 +380,7 @@ namespace _163AlbumGet
 
         private void GET()
         {
-            Err.Text = "";
+            Err.Text = string.Empty;
             bool b = true;
             Regex rx0 = new Regex(@"((https?:)?//)?music\.163\.com/(#/)?album\?\S+", RegexOptions.Compiled);
             Regex rx1 = new Regex(@"id=\d+", RegexOptions.Compiled);
@@ -549,7 +565,7 @@ namespace _163AlbumGet
         public string IniReadValue(string Section, string Key)
         {
             StringBuilder temp = new StringBuilder(500);
-            int i = GetPrivateProfileString(Section, Key, "", temp, 500, inipath);
+            int i = GetPrivateProfileString(Section, Key, string.Empty, temp, 500, inipath);
             return temp.ToString();
         }
         /// <summary> 
