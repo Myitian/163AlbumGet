@@ -7,6 +7,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace _163AlbumGet
@@ -21,7 +22,7 @@ namespace _163AlbumGet
         bool AlbumIDInputOnFocus = false;
         RootObject rb;
         TimeSpan ts;
-        int idata0, idata1, idataa;
+        int idata0, idata1;
         string loc = Program.tloc, exp = "",
             ls1, ls2, ls3,
             sdata0, sdata1, sdata2, sdataa,
@@ -29,18 +30,12 @@ namespace _163AlbumGet
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            bool flag = keyData == Keys.Enter && AlbumIDInputOnFocus;
-            bool result;
-            if (flag)
+            if (keyData == Keys.Enter && AlbumIDInputOnFocus)
             {
                 GET();
-                result = true;
+                return true;
             }
-            else
-            {
-                result = base.ProcessCmdKey(ref msg, keyData);
-            }
-            return result;
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void DLAllSong_Click(object sender, EventArgs e)
@@ -72,11 +67,8 @@ namespace _163AlbumGet
                                         rb.rb[0].album.id.ToString(),
                                         rb.rb[i].name.ToString(),
                                         rb.rb[i].id.ToString());
-                    locx = SaveLoc.Text + ls5 + @"\" + ls6 + Program.fmt;
-                    if (DownloadFile("http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString() + Program.fmt, locx))
-                    {
-                    }
-                    else
+                    locx = FileSavingSettings.PathFilter(SaveLoc.Text + ls5 + @"\" + ls6 + Program.fmt, '_');
+                    if (!DownloadFile("http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString() + Program.fmt, locx))
                     {
                         Error("下载失败 (" + (i + 1).ToString() + ")");
                         ini.IniWriteValue("DownloadFailed", "count", (DLfailedcount + 1).ToString());
@@ -151,6 +143,7 @@ namespace _163AlbumGet
                                         rb.rb[SongListBox.SelectedIndex].name, 
                                         rb.rb[SongListBox.SelectedIndex].id.ToString()) +
                                 Program.fmt;
+                locx = FileSavingSettings.PathFilter(locx, '_');
                 Directory.CreateDirectory(SaveLoc.Text + @"\");
                 if (DownloadFile("http://music.163.com/song/media/outer/url?id=" + rb.rb[SongListBox.SelectedIndex].id.ToString(), locx))
                 {
@@ -173,7 +166,7 @@ namespace _163AlbumGet
         {
             if (!(SaveLoc.Text.EndsWith("/") || SaveLoc.Text.EndsWith(@"\")))
             {
-                SaveLoc.Text = SaveLoc.Text + @"\";
+                SaveLoc.Text += @"\";
             }
             Program.savedir = SaveLoc.Text;
             IniFiles ini = new IniFiles(Program.tloc + @"\settings.ini");
@@ -296,19 +289,19 @@ namespace _163AlbumGet
         {
             Directory.CreateDirectory(loc);
             IniFiles ini = new IniFiles(Program.tloc + @"\settings.ini");
-            if (ini.IniReadValue("163AlbumGet", "FileSaveDir") != "")
+            if (ini.IniReadValue("163AlbumGet", "FileSaveDir").Trim() != "")
             {
                 Program.savedir = ini.IniReadValue("163AlbumGet", "FileSaveDir");
             }
-            if (ini.IniReadValue("163AlbumGet", "AlbumFolderName") != "")
+            if (ini.IniReadValue("163AlbumGet", "AlbumFolderName").Trim() != "")
             {
                 Program.afn = ini.IniReadValue("163AlbumGet", "AlbumFolderName");
             }
-            if (ini.IniReadValue("163AlbumGet", "SingleSongFilename") != "")
+            if (ini.IniReadValue("163AlbumGet", "SingleSongFilename").Trim() != "")
             {
                 Program.ssf = ini.IniReadValue("163AlbumGet", "SingleSongFilename");
             }
-            if (ini.IniReadValue("163AlbumGet", "MultipleSongsFilename") != "")
+            if (ini.IniReadValue("163AlbumGet", "MultipleSongsFilename").Trim() != "")
             {
                 Program.msf = ini.IniReadValue("163AlbumGet", "MultipleSongsFilename");
             }
@@ -364,19 +357,22 @@ namespace _163AlbumGet
 
         private void GET()
         {
+            Err.Text = "";
             bool b = true;
-            Regex rx1 = new Regex(@"^((https?:)?//)?music\.163\.com/(#/)?album\?id=\d+(\D\S*)*$", RegexOptions.ExplicitCapture);
-            Regex rx2 = new Regex(@"\d+", RegexOptions.ExplicitCapture);
-            if (rx1.IsMatch(AlbumID.Text))
+            Regex rx0 = new Regex(@"((https?:)?//)?music\.163\.com/(#/)?album\?\S+", RegexOptions.Compiled);
+            Regex rx1 = new Regex(@"id=\d+", RegexOptions.Compiled);
+            Regex rx2 = new Regex(@"\d+", RegexOptions.Compiled);
+            Match r0 = rx0.Match(AlbumID.Text);
+            if (r0.Success)
             {
-                idataa = AlbumID.Text.IndexOf("id=") + 2;
-                if (idataa <= 3)
+                Match r1 = rx1.Match(r0.Value);
+                if (r1.Success)
                 {
-                    Error("地址错误");
+                    sdataa = rx2.Match(r1.Value).Value;
                 }
                 else
                 {
-                    sdataa = rx2.Match(AlbumID.Text, idataa).Value;
+                    Error("地址错误");
                 }
             }
             else if (rx2.IsMatch(AlbumID.Text))

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace _163AlbumGet
 {
@@ -11,119 +12,49 @@ namespace _163AlbumGet
         {
             InitializeComponent();
         }
-        private string FilenameFilter(string s)
+
+        public static string FileNameFilter(string s, char? replacechar = null)
         {
+            char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
             string a = "";
             foreach (char c in s)
             {
-                switch (c)
+                if (InvalidFileNameChars.Contains(c))
                 {
-                    case '\x00':
-                    case '\x01':
-                    case '\x02':
-                    case '\x03':
-                    case '\x04':
-                    case '\x05':
-                    case '\x06':
-                    case '\x07':
-                    case '\x08':
-                    case '\x09':
-                    case '\x0a':
-                    case '\x0b':
-                    case '\x0c':
-                    case '\x0d':
-                    case '\x0e':
-                    case '\x0f':
-                    case '\x10':
-                    case '\x11':
-                    case '\x12':
-                    case '\x13':
-                    case '\x14':
-                    case '\x15':
-                    case '\x16':
-                    case '\x17':
-                    case '\x18':
-                    case '\x19':
-                    case '\x1a':
-                    case '\x1b':
-                    case '\x1c':
-                    case '\x1d':
-                    case '\x1e':
-                    case '\x1f':
-                    case '<':
-                    case '>':
-                    case '/':
-                    case '\\':
-                    case ':':
-                    case '"':
-                    case '*':
-                    case '?':
-                    default:
-                        a += c;
-                        break;
+                    if (replacechar is null) continue;
+                    else a += replacechar;
                 }
+                else a += c;
             }
             return a;
         }
 
-        private string FileDirFilter(string s)
+        public static string PathFilter(string s, char? replacechar = null)
         {
+            char[] InvalidPathChars = Path.GetInvalidPathChars().Concat(new char[] { '*', '?' }).ToArray();
             string a = "";
             bool n = false;
             foreach (char c in s)
             {
-                switch (c)
+                if (c == ':')
                 {
-                    case '\x00':
-                    case '\x01':
-                    case '\x02':
-                    case '\x03':
-                    case '\x04':
-                    case '\x05':
-                    case '\x06':
-                    case '\x07':
-                    case '\x08':
-                    case '\x09':
-                    case '\x0a':
-                    case '\x0b':
-                    case '\x0c':
-                    case '\x0d':
-                    case '\x0e':
-                    case '\x0f':
-                    case '\x10':
-                    case '\x11':
-                    case '\x12':
-                    case '\x13':
-                    case '\x14':
-                    case '\x15':
-                    case '\x16':
-                    case '\x17':
-                    case '\x18':
-                    case '\x19':
-                    case '\x1a':
-                    case '\x1b':
-                    case '\x1c':
-                    case '\x1d':
-                    case '\x1e':
-                    case '\x1f':
-                    case '<':
-                    case '>':
-                    case '"':
-                    case '*':
-                    case '?':
-                        break;
-                    case ':':
-                        if (!n)
-                        {
-                            n = true;
-                            a += c;
-                            break;
-                        }
-                        break;
-                    default:
+                    if (!n)
+                    {
+                        n = true;
                         a += c;
-                        break;
+                    }
+                    else
+                    {
+                        if (replacechar is null) continue;
+                        else a += replacechar;
+                    }
                 }
+                else if (InvalidPathChars.Contains(c))
+                {
+                    if (replacechar is null) continue;
+                    else a += replacechar;
+                }
+                else a += c;
             }
             return a;
         }
@@ -190,25 +121,27 @@ namespace _163AlbumGet
 
         private void Browse_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.Description = "请选择文件夹路径";
-            string foldPath = "";
-            if (dialog.ShowDialog() == DialogResult.OK)
+            FolderBrowserDialog dialog = new FolderBrowserDialog
             {
-                foldPath = dialog.SelectedPath;
+                Description = "请选择文件夹路径"
+            };
+            switch (dialog.ShowDialog())
+            {
+                case DialogResult.OK:
+                    FileSaveDirI.Text = dialog.SelectedPath;
+                    break;
             }
-            FileSaveDirI.Text = foldPath;
         }
 
         private void Confirm_Click(object sender, EventArgs e)
         {
-            FileSaveDirI.Text = FileDirFilter(FileSaveDirI.Text);
-            AlbumFolderNameI.Text = FilenameFilter(AlbumFolderNameI.Text);
-            SingleSongFilenameI.Text = FilenameFilter(SingleSongFilenameI.Text);
-            MultipleSongsFilenameI.Text = FilenameFilter(MultipleSongsFilenameI.Text);
+            FileSaveDirI.Text = PathFilter(FileSaveDirI.Text);
+            AlbumFolderNameI.Text = FileNameFilter(AlbumFolderNameI.Text);
+            SingleSongFilenameI.Text = FileNameFilter(SingleSongFilenameI.Text);
+            MultipleSongsFilenameI.Text = FileNameFilter(MultipleSongsFilenameI.Text);
             if (!(FileSaveDirI.Text.EndsWith("/") || FileSaveDirI.Text.EndsWith(@"\")))
             {
-                FileSaveDirI.Text = FileSaveDirI.Text + @"\";
+                FileSaveDirI.Text += @"\";
             }
             if (FileSaveDirI.Text != "" ||
                 AlbumFolderNameI.Text != "" ||

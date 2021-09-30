@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace _163AlbumGet
@@ -20,6 +13,7 @@ namespace _163AlbumGet
         private void AboutPage_Load(object sender, EventArgs e)
         {
             LicenseBox.Text = Properties.Resources.LICENSE;
+            LicenseOfNewtonsoftJsonBox.Text = Properties.Resources.LICENSEofNewtonsoftJson;
         }
     }
 }
