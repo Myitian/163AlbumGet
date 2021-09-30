@@ -86,17 +86,17 @@ namespace _163AlbumGet
                     {
                         if (fs.ReadByte() == '<')
                         {
-                            File.Delete(locx);
-                            Error("下载失败，可能原因：版权限制或地区限制 (" + (i + 1).ToString() + ")");
-                            ini.IniWriteValue("DownloadFailed", "count", DLfailedcount.ToString());
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", (i + 1).ToString());
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name.ToString());
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲ID", rb.rb[i].id.ToString());
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "源地址", "http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString());
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "保存路径", locx);
-                            ini.IniWriteValue("Error" + DLfailedcount.ToString(), "可能原因", "版权限制或地区限制");
-                            DLfailedcount++;
-                        }
+                        File.Delete(locx);
+                        Error("下载失败，可能原因：版权限制或地区限制 (" + (i + 1).ToString() + ")");
+                        ini.IniWriteValue("DownloadFailed", "count", DLfailedcount.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲编号", (i + 1).ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲名称", rb.rb[i].name.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "歌曲ID", rb.rb[i].id.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "源地址", "http://music.163.com/song/media/outer/url?id=" + rb.rb[i].id.ToString());
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "保存路径", locx);
+                        ini.IniWriteValue("Error" + DLfailedcount.ToString(), "可能原因", "版权限制或地区限制");
+                        DLfailedcount++;
+                    }
                     }
                     ProcessB.Value = i + 1;
                 }
@@ -158,12 +158,12 @@ namespace _163AlbumGet
                 using (FileStream fs = File.OpenRead(locx))
                 {
                     if (fs.ReadByte() == '<')
-                    {
-                        File.Delete(locx);
-                        Error("下载失败，可能原因：版权限制或地区限制");
-                    }
+                {
+                    File.Delete(locx);
+                    Error("下载失败，可能原因：版权限制或地区限制");
                 }
             }
+        }
         }
 
         private void SaveLoc_TextChanged(object sender, EventArgs e)

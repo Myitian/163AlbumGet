@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.LicenseBox = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.LicenseOfNewtonsoftJsonBox = new System.Windows.Forms.TextBox();
@@ -42,6 +44,15 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 59);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(65, 12);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "开源协议：";
             // 
             // label2
             // 
@@ -90,6 +101,17 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "本程序许可证：GPL-3.0-or-later";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.LicenseOfNewtonsoftJsonBox);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(572, 364);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Newtonsoft.Json 许可证：MIT";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // LicenseBox
             // 
@@ -164,6 +186,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Name = "AboutPage";
             this.Text = "关于";
             this.Load += new System.EventHandler(this.AboutPage_Load);
@@ -178,6 +201,7 @@
         }
 
         #endregion
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
