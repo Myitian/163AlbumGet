@@ -39,7 +39,6 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.LicenseOfNewtonsoftJsonBox = new System.Windows.Forms.TextBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -48,11 +47,12 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 59);
+            this.label1.Font = new System.Drawing.Font("宋体", 12F);
+            this.label1.Location = new System.Drawing.Point(13, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 12);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "开源协议：";
+            this.label1.Size = new System.Drawing.Size(152, 16);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "163AlbumGet v2.0.1";
             // 
             // label2
             // 
@@ -165,16 +165,6 @@
             this.linkLabel1.Text = "https://github.com/MiaoYitian/163AlbumGet";
             this.linkLabel1.Click += new System.EventHandler(this.JumpToWebSite);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("宋体", 12F);
-            this.label1.Location = new System.Drawing.Point(13, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(152, 16);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "163AlbumGet v2.0.1";
-            // 
             // AboutPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -186,7 +176,6 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Name = "AboutPage";
             this.Text = "关于";
             this.Load += new System.EventHandler(this.AboutPage_Load);
@@ -211,6 +200,5 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox LicenseOfNewtonsoftJsonBox;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.Label label1;
     }
 }
